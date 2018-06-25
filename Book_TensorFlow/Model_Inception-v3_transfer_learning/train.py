@@ -67,6 +67,93 @@ def get_trainable_variables():
     return variable_to_train
 
 
+def main():
+    # Load preprocessed data.
+    processed_data = np.load(INPUT_DATA)
+    training_images = processed_data[0]
+    n_training_example = len(training_images)
+    training_labels = processed_data[1]
+    validation_images = processed_data[2]
+    validation_labels = processed_data[3]
+    testing_images = processed_data[4]
+    testing_labels = processed_data[5]
+    print("%d training examples, %d validation examples and %d testing examples." %
+          (n_training_example, len(validation_labels), len(testing_labels)))
+
+    # Define the input of Inception-v3.
+    images = tf.placeholder(tf.float32, [None, 299, 299, 3],
+                            name='input_images')
+    labels = tf.placeholder(tf.int64, [None], name='labels')
+
+    # Define Inception model structure.
+    with slim.arg_scope(inception_v3.inception_v3_arg_scope()):
+        logits, _ = inception_v3.inception_v3(images, num_classes=N_CLASSES)
+    # Fetch trainable variables.
+    trainable_variables = get_trainable_variables()
+    # Define loss function.
+    tf.losses.softmax_cross_entropy(tf.one_hot(labels, N_CLASSES), logits, weights=1.0)
+    # Define the training process.
+    train_step = tf.train.RMSPropOptimizer(LEARNING_RATE).minimize(tf.losses.get_total_loss())
+
+    # Calculate accuracy.
+    with tf.name_scope('evaluation'):
+        correct_prediction = tf.equal(tf.argmax(logits, 1), labels)
+        evaluation_step = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
+    # Define the function to load the pre-trained model.
+    load_fn = slim.assign_from_checkpoint_fn(CKPT_FILE, get_tuned_variables(), ignore_missing_vars=True)
+
+    # Define the saver for newly trained model.
+    saver = tf.train.Saver()
+    with tf.Session() as sess:
+        # Initialize the not assigned variables before loading the model.
+        init = tf.global_variables_initializer()
+        sess.run(init)
+
+        # Load the model.
+        print('Loading tuned variables from %s' % CKPT_FILE)
+        load_fn(sess)
+
+        # Start training.
+        start = 0
+        end = BATCH
+        for i in range(STEPS):
+            # Update pointed variables but not all the variables.
+            sess.run(train_step, feed_dict={
+                images: training_images[start: end],
+                labels: training_labels[start: end]
+            })
+
+            # Output log.
+            if i % 30 == 0 or i + 1 == STEPS:
+                saver.save(sess, TRAIN_FILE, global_step=i)
+                validation_accuracy = sess.run(evaluation_step, feed_dict={
+                    images: validation_images,
+                    labels: validation_labels
+                })
+                print('Step %d: Validation accuracy = %.1f%%' % (i, validation_accuracy * 100.0))
+
+            # Update batch variables.
+            start = end
+            if start == n_training_example:
+                start = 0
+            end = start + BATCH
+            if end > n_training_example:
+                end = n_training_example
+
+            # Test accuracy in test data.
+            test_accuracy = sess.run(evaluation_step, feed_dict={
+                images: testing_images,
+                labels: testing_labels
+            })
+            print('Final test accuracy = %.1f%%' % (test_accuracy * 100))
+
+
+if __name__ == '__main__':
+    tf.app.run()
+
+
+
 
 
 
