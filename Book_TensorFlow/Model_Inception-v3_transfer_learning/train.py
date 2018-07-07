@@ -19,7 +19,7 @@ TRAIN_FILE = 'model/'  # The path to save trained model. First train fully-conne
 CKPT_FILE = 'pre_model/inception_v3.ckpt'  # The file path to save pre-trained model from Google.
 # Set global constants.
 LEARNING_RATE = 0.0001
-STEPS = 300
+STEPS = 6
 BATCH = 32
 N_CLASSES = 5
 # Set variables related to pre-trained model.
@@ -125,7 +125,7 @@ def main():
             })
 
             # Output log.
-            if i % 30 == 0 or i + 1 == STEPS:
+            if i % 2 == 0 or i + 1 == STEPS:
                 saver.save(sess, TRAIN_FILE, global_step=i)
                 validation_accuracy = sess.run(evaluation_step, feed_dict={
                     images: validation_images,
@@ -146,11 +146,12 @@ def main():
                 images: testing_images,
                 labels: testing_labels
             })
-            print('Final test accuracy = %.1f%%' % (test_accuracy * 100))
+        print('Final test accuracy = %.1f%%' % (test_accuracy * 100))
 
 
 if __name__ == '__main__':
-    tf.app.run()
+    # When you want to set global variables using FLAG, use tf.app.run(). Otherwise, using main().
+    main()
 
 
 
