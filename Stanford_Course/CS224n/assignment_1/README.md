@@ -6,3 +6,10 @@
 
 ## How to finish assignment_1?
 The first step: download assignment start code, as well as content of assignment_1.
+
+## The solution to assignment_1.
+1. Softmax.
+(a) Prove softmax(x) = softmax(x + c).
+According to definition formula of softmax, the added exp(c) in numerator would be illuminated by exp(c) in denominator.
+
+(b) 
