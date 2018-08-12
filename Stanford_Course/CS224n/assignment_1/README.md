@@ -12,4 +12,10 @@ The first step: download assignment start code, as well as content of assignment
 (a) Prove softmax(x) = softmax(x + c).
 According to definition formula of softmax, the added exp(c) in numerator would be illuminated by exp(c) in denominator.
 
+(b) See in q1_softmax.py
+
+2. Neural Network Basics.
+(a) Derive the gradients of the sigmoid function.
+The answer will be (1-σ(x))*σ(x).
+
 (b) 
