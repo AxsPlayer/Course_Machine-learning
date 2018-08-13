@@ -18,4 +18,18 @@ According to definition formula of softmax, the added exp(c) in numerator would 
 (a) Derive the gradients of the sigmoid function.
 The answer will be (1-σ(x))*σ(x).
 
-(b) 
+(b) Derive the gradient with regard to the inputs of a softmax function when cross entropy loss is used for evaluation.
+The answer is (yˆ- y).
+
+(c) Derive the gradients with respect to the inputs x to an one-hidden-layer neural network.
+The answer is (yˆ- y)*W2*σ′(xW1 + b1)*W1.
+
+(d) How many parameters are there in this neural network.
+The answer is (Dx+Dy+2)*H
+
+(e) See in q2_sigmoid.py
+
+(f) See in q2_gradcheck.py
+
+(g) See in q2_.py
+

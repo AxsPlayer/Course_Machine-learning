@@ -39,15 +39,24 @@ def forward_backward_prop(X, labels, params, dimensions):
     b2 = np.reshape(params[ofs:ofs + Dy], (1, Dy))
 
     # Note: compute cost based on `sum` not `mean`.
-    ### YOUR CODE HERE: forward propagation
-    raise NotImplementedError
-    ### END YOUR CODE
+    # YOUR CODE HERE: forward propagation
+    hidden_value = sigmoid(np.add(np.matmul(X, W1), b1))
 
-    ### YOUR CODE HERE: backward propagation
-    raise NotImplementedError
-    ### END YOUR CODE
+    result_value = softmax(np.add(np.matmul(hidden_value, W2), b2))
+    # END YOUR CODE
 
-    ### Stack gradients (do not modify)
+    # YOUR CODE HERE: backward propagation
+    cost = np.sum(-labels * np.log(result_value))
+    gradW2 = np.matmul(np.transpose(hidden_value), (result_value - labels))
+    gradb2 = result_value - labels
+    gradW1 = np.matmul(
+        np.transpose(X), np.matmul(
+            np.transpose(np.matmul(W2, np.transpose(result_value - labels))),
+            sigmoid_grad(np.add(np.matmul(X, W1), b1))))
+    gradb1 = np.matmul(np.matmul((result_value - labels), W2), sigmoid_grad(np.add(np.matmul(X, W1), b1)))
+    # END YOUR CODE
+
+    # Stack gradients (do not modify)
     grad = np.concatenate((gradW1.flatten(), gradb1.flatten(),
         gradW2.flatten(), gradb2.flatten()))
 
@@ -83,9 +92,9 @@ def your_sanity_checks():
     your additional tests be graded.
     """
     print "Running your sanity checks..."
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    # YOUR CODE HERE
+    pass
+    # END YOUR CODE
 
 
 if __name__ == "__main__":
