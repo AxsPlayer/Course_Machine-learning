@@ -46,7 +46,7 @@ def forward_backward_prop(X, labels, params, dimensions):
     # END YOUR CODE
 
     # YOUR CODE HERE: backward propagation
-    cost = np.sum(-labels * np.log(result_value))
+    cost = np.sum(-labels * np.log(result_value)) / result_value[0]
     gradW2 = np.matmul(np.transpose(hidden_value), (result_value - labels))
     gradb2 = result_value - labels
     gradW1 = np.matmul(
