@@ -6,6 +6,9 @@ First Version Plus: Optimization on count-based model for stop word, and so on s
 Second Version(Direct Prediction): Moving windows with Skip-gram deep learning method, also named word2vec.
 Third Version(GloVe-which combining the best of both worlds above): Utilize co-occurance matrix as well as objective function. And the next step is to sum column word vector and row word vector. The advantages of GloVe are: 1. Fast training; 2. Scalable to huge corpora; 3. Good performance even with small corpus, and small vectors.
 
+## What’s the Skip-gram model?
+In max-pro method, you would go through all the corpus of words and it’s unnecessary. And we can take negative sample method to alleviate this problem. The concrete step is to sum probability of positive example and some negative samples as final objective function.
+
 ## Evaluation methods.
 - Intrinsic: Evaluate NLP vectors using specific/intermediate subtask. The advantages are it’s fast to compute and it helps to understand how system works.
 - Extrinsic: Evaluate NLP vectors using real task. The advantages are it can truly calculate the improvement of result.
