@@ -46,15 +46,20 @@ def forward_backward_prop(X, labels, params, dimensions):
     # END YOUR CODE
 
     # YOUR CODE HERE: backward propagation
+    # Attention: In derivative, you should make yourself clear about the difference between matmul
+    # and *. For derivative of function, use * such as sigmoid_grad and for derivative, use matmul.
     cost = np.sum(-labels * np.log(result_value)) / result_value.shape[0]
-    gradW2 = np.matmul(np.transpose(hidden_value), (result_value - labels)) / result_value.shape[0]
-    gradb2 = (result_value - labels) / result_value.shape[0]
+    d_3 = result_value - labels
+    d_2 = np.matmul(d_3, np.transpose(W2))
+    d_1 = sigmoid_grad(np.add(np.matmul(X, W1), b1))
+
+    gradW2 = np.matmul(np.transpose(hidden_value), d_3) / result_value.shape[0]
+    gradb2 = np.sum(d_3 / result_value.shape[0], 0, keepdims=True)
     gradW1 = np.matmul(
-        np.transpose(X), np.matmul(sigmoid_grad(np.add(np.matmul(X, W1), b1)),
-                                   np.matmul((result_value - labels), np.transpose(W2))
-                                   )
+        np.transpose(X),
+        d_1 * d_2 / result_value.shape[0]
     )
-    gradb1 = np.matmul(np.matmul((result_value - labels), W2), sigmoid_grad(np.add(np.matmul(X, W1), b1)))
+    gradb1 = np.sum(d_2 * d_1 / result_value.shape[0], 0)
     # END YOUR CODE
 
     # Stack gradients (do not modify)
