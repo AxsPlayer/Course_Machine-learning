@@ -51,7 +51,7 @@ def forward_backward_prop(X, labels, params, dimensions):
     cost = np.sum(-labels * np.log(result_value)) / result_value.shape[0]
     d_3 = result_value - labels
     d_2 = np.matmul(d_3, np.transpose(W2))
-    d_1 = sigmoid_grad(np.add(np.matmul(X, W1), b1))
+    d_1 = sigmoid_grad(hidden_value)
 
     gradW2 = np.matmul(np.transpose(hidden_value), d_3) / result_value.shape[0]
     gradb2 = np.sum(d_3 / result_value.shape[0], 0, keepdims=True)
@@ -65,7 +65,6 @@ def forward_backward_prop(X, labels, params, dimensions):
     # Stack gradients (do not modify)
     grad = np.concatenate((gradW1.flatten(), gradb1.flatten(),
         gradW2.flatten(), gradb2.flatten()))
-
     return cost, grad
 
 
@@ -81,13 +80,12 @@ def sanity_check():
     data = np.random.randn(N, dimensions[0])   # each row will be a datum
     labels = np.zeros((N, dimensions[2]))
     for i in xrange(N):
-        labels[i, random.randint(0,dimensions[2]-1)] = 1
+        labels[i, random.randint(0, dimensions[2]-1)] = 1
 
     params = np.random.randn((dimensions[0] + 1) * dimensions[1] + (
         dimensions[1] + 1) * dimensions[2], )
 
-    gradcheck_naive(lambda params:
-        forward_backward_prop(data, labels, params, dimensions), params)
+    gradcheck_naive(lambda params: forward_backward_prop(data, labels, params, dimensions), params)
 
 
 def your_sanity_checks():
