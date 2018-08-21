@@ -33,5 +33,16 @@ The answer is (Dx+Dy+2)*H
 
 (g) See in q2_neural.py
 
-3. 
+3. Word2vec.
+(a) Derive the gradients with respect to vc.
+The answer is U(yˆ-y).
+
+(b) Derive gradients for the “output” word vectors uk’s.
+The answer is vc(yˆ-y).
+
+(c) The answer is because of negative sampling from several words instead of thousands words, the speed to calculate word vectors is decreased.
+
+(d) See the answers of assignment_1.
+
+(e) See in q3_
 
