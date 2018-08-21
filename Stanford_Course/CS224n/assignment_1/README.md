@@ -31,5 +31,7 @@ The answer is (Dx+Dy+2)*H
 
 (f) See in q2_gradcheck.py
 
-(g) See in q2_.py
+(g) See in q2_neural.py
+
+3. 
 

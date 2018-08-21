@@ -5,6 +5,5 @@ Using average of word vectors to represent sentence vector, and using hierarchic
 
 ## Some Advice.
 - Set baseline for your project.
-Using simple models to set a baseline for your project, not only for model performance score, but also for correctness for data split and so on so forth,
- 
+Using simple models to set a baseline for your project, not only for model performance score, but also for correctness for data split and so on so forth.
 
