@@ -59,9 +59,9 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     assignment!
     """
 
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    # YOUR CODE HERE
+    result_value = softmax(np.matmul(outputVectors, predicted.T))
+    # END YOUR CODE
 
     return cost, gradPred, grad
 
