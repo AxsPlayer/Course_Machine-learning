@@ -17,3 +17,6 @@ In max-pro method, you would go through all the corpus of words and it’s unnec
 - Symmetric context works better than Asymmetric context.
 - Word2vec may not always useful initialization step for down streaming machine learning tasks. For example, it’s not useful to sentiment analysis, for word vectors contains the context information but sentiment doesn’t care about context. Thus, initialize word vectors randomly is more helpful.
 
+## The concrete algorithm of GloVe?
+Waiting to add.
+
