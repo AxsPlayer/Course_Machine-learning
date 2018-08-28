@@ -58,9 +58,15 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     free to reference the code you previously wrote for this
     assignment!
     """
-
     # YOUR CODE HERE
-    result_value = softmax(np.matmul(outputVectors, predicted.T))
+    # Calculate result softmax value and cost of neural network.
+    result_value = softmax(np.matmul(outputVectors, predicted))
+    cost = -np.log(result_value[target])
+
+    # Calculate gradient.
+    result_value[target] = result_value[target] - 1
+    grad = np.matmul(result_value, predicted.T)
+    gradPred = np.matmul(outputVectors.T, result_value)
     # END YOUR CODE
 
     return cost, gradPred, grad
@@ -97,9 +103,25 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     indices = [target]
     indices.extend(getNegativeSamples(target, dataset, K))
 
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    # YOUR CODE HERE
+    # Initialize parameters.
+    grad = np.zeros(outputVectors.shape)
+    gradPred = np.zeros(predicted.shape)
+    cost = 0
+    # Calculate result softmax value and cost of neural network.
+    for indice in indices:
+        result_value = sigmoid(np.matmul(outputVectors, predicted))
+        if indice == target:
+            cost += -np.log(result_value[indice])
+            # Calculate gradient for target vector.
+            grad += np.matmul((result_value - 1), predicted.T)
+            gradPred += np.matmul(outputVectors.T, (result_value - 1))
+        else:
+            cost += np.log(result_value[indice])
+            # Calculate gradient for target vector.
+            grad += np.matmul((1 - result_value), predicted.T)
+            gradPred += np.matmul(outputVectors.T, (1 - result_value))
+    # END YOUR CODE
 
     return cost, gradPred, grad
 
