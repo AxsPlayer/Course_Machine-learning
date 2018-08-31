@@ -60,12 +60,13 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     """
     # YOUR CODE HERE
     # Calculate result softmax value and cost of neural network.
-    result_value = softmax(np.matmul(outputVectors, predicted))
+    result = np.matmul(outputVectors, predicted)
+    result_value = softmax(result)
     cost = -np.log(result_value[target])
 
     # Calculate gradient.
     result_value[target] = result_value[target] - 1
-    grad = np.matmul(result_value, predicted.T)
+    grad = np.outer(result_value, predicted)
     gradPred = np.matmul(outputVectors.T, result_value)
     # END YOUR CODE
 
@@ -110,17 +111,18 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     cost = 0
     # Calculate result softmax value and cost of neural network.
     for indice in indices:
-        result_value = sigmoid(np.matmul(outputVectors, predicted))
+        result = np.matmul(outputVectors, predicted)
+        result_value = sigmoid(result)
         if indice == target:
             cost += -np.log(result_value[indice])
             # Calculate gradient for target vector.
-            grad += np.matmul((result_value - 1), predicted.T)
+            grad += np.outer((result_value - 1), predicted)
             gradPred += np.matmul(outputVectors.T, (result_value - 1))
         else:
-            cost += np.log(result_value[indice])
+            cost += -np.log(1 - result_value[indice])
             # Calculate gradient for target vector.
-            grad += np.matmul((1 - result_value), predicted.T)
-            gradPred += np.matmul(outputVectors.T, (1 - result_value))
+            grad += np.outer(result_value, predicted)
+            gradPred += np.matmul(outputVectors.T, result_value)
     # END YOUR CODE
 
     return cost, gradPred, grad
@@ -149,14 +151,25 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     cost -- the cost function value for the skip-gram model
     grad -- the gradient with respect to the word vectors
     """
-
     cost = 0.0
     gradIn = np.zeros(inputVectors.shape)
     gradOut = np.zeros(outputVectors.shape)
 
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    # YOUR CODE HERE
+    # Initialize current word.
+    current_word_index  = tokens[currentWord]
+    current_word = inputVectors[current_word_index]
+
+    # Loop through the context words.
+    for contextWord in contextWords:
+        context_word_index = tokens[contextWord]
+        c_cost, c_grad_in, c_grad_out = \
+            word2vecCostAndGradient(current_word, context_word_index, outputVectors, dataset)
+        # Update the parameters.
+        cost += c_cost
+        gradIn[current_word_index] += c_grad_in
+        gradOut += c_grad_out
+    # END YOUR CODE
 
     return cost, gradIn, gradOut
 
@@ -178,9 +191,9 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradIn = np.zeros(inputVectors.shape)
     gradOut = np.zeros(outputVectors.shape)
 
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    # YOUR CODE HERE
+
+    # END YOUR CODE
 
     return cost, gradIn, gradOut
 
