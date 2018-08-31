@@ -44,5 +44,6 @@ The answer is vc(yˆ-y).
 
 (d) See the answers of assignment_1.
 
-(e) See in q3_
+4. Sentiment analysis.
+(a) See in scripts.
 

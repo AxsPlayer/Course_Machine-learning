@@ -111,18 +111,19 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     cost = 0
     # Calculate result softmax value and cost of neural network.
     for indice in indices:
-        result = np.matmul(outputVectors, predicted)
+        result = np.matmul(outputVectors[indice], predicted)
         result_value = sigmoid(result)
         if indice == target:
-            cost += -np.log(result_value[indice])
+            cost += -np.log(result_value)
             # Calculate gradient for target vector.
-            grad += np.outer((result_value - 1), predicted)
-            gradPred += np.matmul(outputVectors.T, (result_value - 1))
+            # Attention: gradient of function sigmoid is '*', not np.matmul.
+            grad[indice] += (result_value - 1) * predicted
+            gradPred += outputVectors[indice] * (result_value - 1)
         else:
-            cost += -np.log(1 - result_value[indice])
+            cost += -np.log(1 - result_value)
             # Calculate gradient for target vector.
-            grad += np.outer(result_value, predicted)
-            gradPred += np.matmul(outputVectors.T, result_value)
+            grad[indice] += result_value * predicted
+            gradPred += outputVectors[indice] * result_value
     # END YOUR CODE
 
     return cost, gradPred, grad

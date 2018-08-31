@@ -99,3 +99,8 @@ ENV/
 
 # mypy
 .mypy_cache/
+*.npy
+Stanford_Course/CS224n/assignment_1/assignment1_startcode/utils/datasets/__MACOSX/stanfordSentimentTreebank/._datasetSentences.txt
+*.txt
+*.png
+*.conll

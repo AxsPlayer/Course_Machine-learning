@@ -21,5 +21,17 @@ Improve language modeling:
 
 ## Main Improvement: Better Units. (Gated Recurrent Units(GRU))
 - Main ideas: 1. keep around memories to capture long distance dependencies. 2. allow error messages to flow at different strengths depending on the inputs.
-- GRU units: 1. update gate and reset gate, calculation using the hidden state, as well as the input word vector, the same form as in simple RNN, but with the different weight matrix. Another thing is that the activation function of gates is sigmoid, thus every elements in gates is between 0 and 1.
+- GRU units: 1. update gate and reset gate, calculation using the hidden state, as well as the input word vector, the same form as in simple RNN, but with the different weight matrix. Another thing is that the activation function of gates is sigmoid, thus every elements in gates is between 0 and 1. 
+	- reset gate: If reset gate unit is ~0, then this ignores previous memory and only stores the new word information.
+	- update gate: Update gate decides when to update and how much to update the information.
+	- The advantage of GRU, compared to simple RNN: The GRU could decide when and how much to reset and update previous information in neural network. In RNN, the previous information is averaged and washed as words go on.
+	- Why we should set two kinds of gates: The one reason is that when we use reset gate, we can filter the importance of x information out of the combination of x information and ht-1(previous state) information.
+
+## LSTM.
+- Gates unit: Input gate to decide whether to input current cell. Forget gate to decide whether to forget past information. Output gate to decide how much cell is exposed.
+- Gradient vanishing problem: LSTM also has some kind of vanishing problem, but much less. It helps the information collection problem but not with engineering problem.
+- Sentence vector representation: Extract the hidden state of last encoder output.
+
+# Some variant of LSTM.
+- Pointer for previous word to predict unseen word in the training stage.
 
