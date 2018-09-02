@@ -47,3 +47,14 @@ The answer is vc(yˆ-y).
 4. Sentiment analysis.
 (a) See in scripts.
 
+(b) The reason why to introduce regularization term is that we don’t want our model to overfit training data. And the regularization term can decrease the search space to prevent it happening.
+
+(c) See in scripts.
+
+(d) For the GloVe utilizes the statistical information of training sentences, uses much more training data, and the data quality from wikipedia is better than our original dataset.
+
+(e) The plots get down as regularization increase, and the difference between train accuracy and dev accuracy become lower as regularization increase.
+
+(f) The model tends to predict score in the middle.
+
+(g) Some bad case seems to have the problem that no or none is happening with other positive words, for the reason our sentence feature doesn’t take the word sequence into account, thus, no or none may confuse model. The improvement is to utilize the word sequence using RNN or LSTM.
