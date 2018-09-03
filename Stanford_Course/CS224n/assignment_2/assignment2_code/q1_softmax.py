@@ -23,8 +23,9 @@ def softmax(x):
                   tensor in this problem.
     """
 
-    ### YOUR CODE HERE
-    ### END YOUR CODE
+    # YOUR CODE HERE
+
+    # END YOUR CODE
 
     return out
 

@@ -15,3 +15,8 @@
 	- If loss curve appears to be ‘linear’, increase learning rate.
 - Regularization: 
 If the gap between train and dev accuracies is large(overfitting), increase the regularization constant.
+
+## Gradient of different parts.
+- Gradient of activation function is element-wise multiplication.
+- Gradient of matrix multiplication is the same.
+
