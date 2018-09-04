@@ -5,3 +5,9 @@
 - Modern sequence model for neural machine translation(NMT): The RNN consists of encoder and decoder.
 	- conditional recurrent language model: produce Y using source language and translate into target language using Y.
 - Improvement: In decoder, feed the Y into every time step.
+
+## Four big wins of Neural MT.
+- End-to-end training. All parameters are optimized at the same time.
+- Distributed representations share strength. Better exploitation of word and phrase similarities.
+- Better exploitation of context. NMT can use a much bigger context, without sparse data problem.
+- More fluent text generation. Deep learning text generation is much higher quality.
