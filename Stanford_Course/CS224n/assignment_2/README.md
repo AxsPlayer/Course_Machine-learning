@@ -4,3 +4,8 @@
 1. Tensorflow Softmax.
 (c) The placeholder variables and feed dictionaries leave space for input data, thus you can change the batch number when you train your network.  
 
+(e) When train_op is called, all the variables to get the result will be updated according to the gradient.
+- Attention: There are some errors with none as the loss results, and the reason is the softmax formula is wrong.
+
+2. Neural Transition-Based Dependency Parsing.
+(b) 2n, n for shift and n for transition.
