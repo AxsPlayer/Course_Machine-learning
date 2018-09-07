@@ -53,8 +53,11 @@ class ParserModel(Model):
 
         (Don't change the variable names)
         """
-        ### YOUR CODE HERE
-        ### END YOUR CODE
+        # YOUR CODE HERE
+        self.input_placeholder = tf.placeholder(tf.int32, [None, self.config.n_features], 'input')
+        self.labels_placeholder = tf.placeholder(tf.float32, [None, self.config.n_classes], 'label')
+        self.dropout_placeholder = tf.placeholder(tf.float32, [1, ], 'dropout')
+        # END YOUR CODE
 
     def create_feed_dict(self, inputs_batch, labels_batch=None, dropout=0):
         """Creates the feed_dict for the dependency parser.
@@ -78,8 +81,11 @@ class ParserModel(Model):
         Returns:
             feed_dict: The feed dictionary mapping from placeholders to values.
         """
-        ### YOUR CODE HERE
-        ### END YOUR CODE
+        # YOUR CODE HERE
+        feed_dict = {self.input_placeholder: inputs_batch,
+                     self.labels_placeholder: labels_batch,
+                     self.dropout_placeholder: dropout}
+        # END YOUR CODE
         return feed_dict
 
     def add_embedding(self):
@@ -99,8 +105,9 @@ class ParserModel(Model):
         Returns:
             embeddings: tf.Tensor of shape (None, n_features*embed_size)
         """
-        ### YOUR CODE HERE
-        ### END YOUR CODE
+        # YOUR CODE HERE
+        
+        # END YOUR CODE
         return embeddings
 
     def add_prediction_op(self):

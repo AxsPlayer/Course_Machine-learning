@@ -9,3 +9,9 @@
 
 2. Neural Transition-Based Dependency Parsing.
 (b) 2n, n for shift and n for transition.
+
+(f) γ is 1/(1-pdrop).
+
+(g)(i) Because it minimizes the influence of current gradient. 
+	Because it will not in local minimum and the method seems like to do average over all the dataset.
+(ii) The parameters with smallest average gradient will update largest. For the reason it will force the parameter with small gradient to leave the local minimum.

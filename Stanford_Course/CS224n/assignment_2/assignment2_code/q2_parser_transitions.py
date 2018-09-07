@@ -78,8 +78,28 @@ def minibatch_parse(sentences, model, batch_size):
                       contain the parse for sentences[i]).
     """
 
-    ### YOUR CODE HERE
-    ### END YOUR CODE
+    # YOUR CODE HERE
+    # Create list of parses for all the sentences.
+    partial_parses = [PartialParse(s) for s in sentences]
+    unfinished_parse = partial_parses
+
+    # Parse the sentences in every mini-batch.
+    while len(unfinished_parse) > 0:
+        mini_batch = unfinished_parse[0:batch_size]
+
+        while len(mini_batch) > 0:
+            transitions = model.predict(mini_batch)
+            for index, transition in enumerate(transitions):
+                mini_batch[index].parse_step(transition)
+            mini_batch = [parse for parse in mini_batch if len(parse.stack) > 1 or len(parse.buffer) > 0]
+
+        unfinished_parse = unfinished_parse[batch_size:]
+
+    # Create list of dependencies and insert into list.
+    dependencies = []
+    for i in xrange(len(sentences)):
+        dependencies.append(partial_parses[i].dependencies)
+    # END YOUR CODE
 
     return dependencies
 
@@ -167,4 +187,4 @@ def test_minibatch_parse():
 if __name__ == '__main__':
     test_parse_step()
     test_parse()
-    #test_minibatch_parse()
+    test_minibatch_parse()
