@@ -106,7 +106,9 @@ class ParserModel(Model):
             embeddings: tf.Tensor of shape (None, n_features*embed_size)
         """
         # YOUR CODE HERE
-        
+        embedding_dic = tf.Variable(self.pretrained_embeddings)
+        embedding_middle = tf.nn.embedding_lookup(embedding_dic, self.input_placeholder)
+        embeddings = tf.reshape(embedding_middle, [-1, self.config.n_features*self.config.embed_size])
         # END YOUR CODE
         return embeddings
 
@@ -132,8 +134,16 @@ class ParserModel(Model):
         """
 
         x = self.add_embedding()
-        ### YOUR CODE HERE
-        ### END YOUR CODE
+        # YOUR CODE HERE
+        initial = xavier_weight_init()
+        W = tf.Variable(initial(shape=[self.config.n_features, self.config.n_classes]))
+        bias_1 = tf.Variable(tf.zeros([self.config.n_classes]))
+        bias_2 = tf.Variable(tf.zeros([self.config.n_classes]))
+
+        hidden = tf.nn.relu(tf.matmul(x, W) + bias_1)
+        hidden_drop = tf.nn.dropout(hidden, 1-self.dropout_placeholder)
+        pred = hidden_drop + bias_2
+        # END YOUR CODE
         return pred
 
     def add_loss_op(self, pred):
@@ -149,8 +159,9 @@ class ParserModel(Model):
         Returns:
             loss: A 0-d tensor (scalar)
         """
-        ### YOUR CODE HERE
-        ### END YOUR CODE
+        # YOUR CODE HERE
+        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred))
+        # END YOUR CODE
         return loss
 
     def add_training_op(self, loss):
@@ -173,8 +184,9 @@ class ParserModel(Model):
         Returns:
             train_op: The Op for training.
         """
-        ### YOUR CODE HERE
-        ### END YOUR CODE
+        # YOUR CODE HERE
+        train_op = tf.train.AdamOptimizer(self.config.lr).minimize(loss)
+        # END YOUR CODE
         return train_op
 
     def train_on_batch(self, sess, inputs_batch, labels_batch):
