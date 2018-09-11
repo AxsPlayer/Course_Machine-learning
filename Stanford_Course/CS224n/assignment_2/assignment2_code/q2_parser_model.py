@@ -54,9 +54,9 @@ class ParserModel(Model):
         (Don't change the variable names)
         """
         # YOUR CODE HERE
-        self.input_placeholder = tf.placeholder(tf.int32, [None, self.config.n_features], 'input')
-        self.labels_placeholder = tf.placeholder(tf.float32, [None, self.config.n_classes], 'label')
-        self.dropout_placeholder = tf.placeholder(tf.float32, [1, ], 'dropout')
+        self.input_placeholder = tf.placeholder(tf.int32, [None, self.config.n_features])
+        self.labels_placeholder = tf.placeholder(tf.float32, [None, self.config.n_classes])
+        self.dropout_placeholder = tf.placeholder(tf.float32)
         # END YOUR CODE
 
     def create_feed_dict(self, inputs_batch, labels_batch=None, dropout=0):
@@ -83,8 +83,9 @@ class ParserModel(Model):
         """
         # YOUR CODE HERE
         feed_dict = {self.input_placeholder: inputs_batch,
-                     self.labels_placeholder: labels_batch,
                      self.dropout_placeholder: dropout}
+        if labels_batch is not None:
+            feed_dict[self.labels_placeholder] = labels_batch
         # END YOUR CODE
         return feed_dict
 
@@ -136,13 +137,14 @@ class ParserModel(Model):
         x = self.add_embedding()
         # YOUR CODE HERE
         initial = xavier_weight_init()
-        W = tf.Variable(initial(shape=[self.config.n_features, self.config.n_classes]))
-        bias_1 = tf.Variable(tf.zeros([self.config.n_classes]))
+        W = tf.Variable(initial(shape=[self.config.n_features*self.config.embed_size, self.config.hidden_size]))
+        bias_1 = tf.Variable(tf.zeros([self.config.hidden_size, ]))
         bias_2 = tf.Variable(tf.zeros([self.config.n_classes]))
 
         hidden = tf.nn.relu(tf.matmul(x, W) + bias_1)
-        hidden_drop = tf.nn.dropout(hidden, 1-self.dropout_placeholder)
-        pred = hidden_drop + bias_2
+        hidden_drop = tf.nn.dropout(hidden, keep_prob=(1 - self.dropout_placeholder))
+        U = tf.Variable(initial(shape=[self.config.hidden_size, self.config.n_classes]))
+        pred = tf.matmul(hidden_drop, U) + bias_2
         # END YOUR CODE
         return pred
 
@@ -160,7 +162,7 @@ class ParserModel(Model):
             loss: A 0-d tensor (scalar)
         """
         # YOUR CODE HERE
-        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred))
+        loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=self.labels_placeholder))
         # END YOUR CODE
         return loss
 
