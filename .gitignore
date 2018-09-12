@@ -104,3 +104,7 @@ Stanford_Course/CS224n/assignment_1/assignment1_startcode/utils/datasets/__MACOS
 *.txt
 *.png
 *.conll
+Stanford_Course/CS224n/assignment_2/assignment2_code/data/weights/checkpoint
+Stanford_Course/CS224n/assignment_2/assignment2_code/data/weights/parser.weights.data-00000-of-00001
+Stanford_Course/CS224n/assignment_2/assignment2_code/data/weights/parser.weights.index
+Stanford_Course/CS224n/assignment_2/assignment2_code/data/weights/parser.weights.meta

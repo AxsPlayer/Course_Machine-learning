@@ -15,3 +15,7 @@
 (g)(i) Because it minimizes the influence of current gradient. 
 	Because it will not in local minimum and the method seems like to do average over all the dataset.
 (ii) The parameters with smallest average gradient will update largest. For the reason it will force the parameter with small gradient to leave the local minimum.
+
+3. Recurrent Neural Networks: Language Modeling.
+(a) (i) The perplexity is the log(CE), which means the possible set of possible words to be chosen.
+()

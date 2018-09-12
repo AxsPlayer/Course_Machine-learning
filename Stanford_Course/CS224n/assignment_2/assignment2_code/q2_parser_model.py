@@ -271,5 +271,5 @@ def main(debug=True):
 
 
 if __name__ == '__main__':
-    main()
+    main(debug=False)
 
