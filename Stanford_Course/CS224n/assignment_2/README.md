@@ -18,4 +18,3 @@
 
 3. Recurrent Neural Networks: Language Modeling.
 (a) (i) The perplexity is the log(CE), which means the possible set of possible words to be chosen.
-()
