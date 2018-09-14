@@ -9,4 +9,4 @@
 - Advantage: compute parallel.
 
 ## History of CNN in NLP.
-- Single layer CNN: 
+- Single layer CNN: The filter is vector to sum up several word vectors to CNN layer.

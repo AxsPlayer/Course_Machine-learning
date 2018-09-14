@@ -27,6 +27,7 @@ logger = logging.getLogger("hw3.q2")
 logger.setLevel(logging.DEBUG)
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
+
 class Config:
     """Holds model hyperparams and data information.
 
@@ -59,6 +60,7 @@ class Config:
         self.eval_output = self.output_path + "results.txt"
         self.conll_output = self.output_path + "{}_predictions.conll".format(self.cell)
         self.log_output = self.output_path + "log"
+
 
 def pad_sequences(data, max_length):
     """Ensures each input-output seqeunce pair in @data is of length
@@ -102,10 +104,17 @@ def pad_sequences(data, max_length):
     zero_label = 4 # corresponds to the 'O' tag
 
     for sentence, labels in data:
-        ### YOUR CODE HERE (~4-6 lines)
-        pass
-        ### END YOUR CODE ###
+        # YOUR CODE HERE (~4-6 lines)
+        if len(sentence) >= max_length:
+            sentence, labels, mask = sentence[0:max_length], labels[0:max_length], [True] * max_length
+        else:
+            diff = max_length-len(sentence)
+            sentence, labels, mask = sentence + [zero_vector] * diff, labels + [zero_label] * diff,\
+                                     [True] * len(sentence) + [False] * diff
+        ret.append((sentence, labels, mask))
+        # END YOUR CODE ###
     return ret
+
 
 class RNNModel(NERModel):
     """
@@ -140,8 +149,12 @@ class RNNModel(NERModel):
 
         (Don't change the variable names)
         """
-        ### YOUR CODE HERE (~4-6 lines)
-        ### END YOUR CODE
+        # YOUR CODE HERE (~4-6 lines)
+        self.input_placeholder = tf.placeholder(tf.int32, [None, self.max_length, self.config.n_features])
+        self.labels_placeholder = tf.placeholder(tf.int32, [None, self.max_length])
+        self.mask_placeholder = tf.placeholder(tf.bool, [None, self.max_length])
+        self.dropout_placeholder = tf.placeholder(tf.float32)
+        # END YOUR CODE
 
     def create_feed_dict(self, inputs_batch, mask_batch, labels_batch=None, dropout=1):
         """Creates the feed_dict for the dependency parser.
@@ -165,8 +178,13 @@ class RNNModel(NERModel):
         Returns:
             feed_dict: The feed dictionary mapping from placeholders to values.
         """
-        ### YOUR CODE (~6-10 lines)
-        ### END YOUR CODE
+        # YOUR CODE (~6-10 lines)
+        feed_dict = {self.input_placeholder: inputs_batch,
+                     self.mask_placeholder: mask_batch,
+                     self.dropout_placeholder: dropout}
+        if labels_batch is not None:
+            feed_dict[self.labels_placeholder] = labels_batch
+        # END YOUR CODE
         return feed_dict
 
     def add_embedding(self):
@@ -189,8 +207,11 @@ class RNNModel(NERModel):
         Returns:
             embeddings: tf.Tensor of shape (None, max_length, n_features*embed_size)
         """
-        ### YOUR CODE HERE (~4-6 lines)
-        ### END YOUR CODE
+        # YOUR CODE HERE (~4-6 lines)
+        embedding_tensor = tf.Variable(self.pretrained_embeddings)
+        embeddings = tf.nn.embedding_lookup(embedding_tensor, self.input_placeholder)
+        embeddings = tf.reshape(embeddings, [-1, self.max_length, self.config.n_features*self.config.embed_size])
+        # END YOUR CODE
         return embeddings
 
     def add_prediction_op(self):
@@ -250,14 +271,20 @@ class RNNModel(NERModel):
 
         # Define U and b2 as variables.
         # Initialize state as vector of zeros.
-        ### YOUR CODE HERE (~4-6 lines)
-        ### END YOUR CODE
+        # YOUR CODE HERE (~4-6 lines)
+        with tf.variable_scope('layer_1'):
+            U = tf.get_variable('U', [self.config.hidden_size, self.config.n_classes], tf.float32,
+                                tf.contrib.layers.xavier_initializer(seed=1021))
+            b2 = tf.get_variable('b2', [self.config.n_classes], tf.float32,
+                                 tf.constant_initializer(0))
+            state = tf.zeros()
+        # END YOUR CODE
 
         with tf.variable_scope("RNN"):
             for time_step in range(self.max_length):
-                ### YOUR CODE HERE (~6-10 lines)
-                pass
-                ### END YOUR CODE
+                # YOUR CODE HERE (~6-10 lines)
+
+                # END YOUR CODE
 
         # Make sure to reshape @preds here.
         ### YOUR CODE HERE (~2-4 lines)

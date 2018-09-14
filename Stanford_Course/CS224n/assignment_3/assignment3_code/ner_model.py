@@ -16,6 +16,7 @@ logger = logging.getLogger("hw3")
 logger.setLevel(logging.DEBUG)
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
+
 class NERModel(Model):
     """
     Implements special functionality for NER models.
@@ -42,7 +43,6 @@ class NERModel(Model):
         process back into the original sequence.
         """
         raise NotImplementedError("Each Model must re-implement this method.")
-
 
     def evaluate(self, sess, examples, examples_raw):
         """Evaluates model performance on @examples.
@@ -73,7 +73,6 @@ class NERModel(Model):
         f1 = 2 * p * r / (p + r) if correct_preds > 0 else 0
         return token_cm, (p, r, f1)
 
-
     def output(self, sess, inputs_raw, inputs=None):
         """
         Reports the output of the model on examples (uses helper to featurize each example).
@@ -102,16 +101,22 @@ class NERModel(Model):
             # You may use the progress bar to monitor the training progress
             # Addition of progress bar will not be graded, but may help when debugging
             prog = Progbar(target=1 + int(len(train_examples) / self.config.batch_size))
-			
-			# The general idea is to loop over minibatches from train_examples, and run train_on_batch inside the loop
-			# Hint: train_examples could be a list containing the feature data and label data
-			# Read the doc for utils.get_minibatches to find out how to use it.
-                        # Note that get_minibatches could either return a list, or a list of list
-                        # [features, labels]. This makes expanding tuples into arguments (* operator) handy
 
-            ### YOUR CODE HERE (2-3 lines)
+            # The general idea is to loop over minibatches from train_examples, and run train_on_batch inside the loop
+            #  Hint: train_examples could be a list containing the feature data and label data
+            #  Read the doc for utils.get_minibatches to find out how to use it.
+            #  Note that get_minibatches could either return a list, or a list of list
+            #  [features, labels]. This makes expanding tuples into arguments (* operator) handy
 
-            ### END YOUR CODE
+            # YOUR CODE HERE (2-3 lines)
+            for i, batch in enumerate(minibatches(train_examples, self.config.batch_size)):
+                loss = self.train_on_batch(sess, *batch)
+                prog.update(i + 1, [("train loss", loss)])
+                if self.report:
+                    self.report.log_train_loss(loss)
+                else:
+                    print("")
+            # END YOUR CODE
 
             logger.info("Evaluating on development data")
             token_cm, entity_scores = self.evaluate(sess, dev_set, dev_set_raw)
