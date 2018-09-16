@@ -18,6 +18,7 @@ logger = logging.getLogger("hw3.q3.1")
 logger.setLevel(logging.DEBUG)
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
+
 class GRUCell(tf.nn.rnn_cell.RNNCell):
     """Wrapper around our GRU cell implementation that allows us to play
     nicely with TensorFlow.
@@ -64,9 +65,30 @@ class GRUCell(tf.nn.rnn_cell.RNNCell):
         # It's always a good idea to scope variables in functions lest they
         # be defined elsewhere!
         with tf.variable_scope(scope):
-            ### YOUR CODE HERE (~20-30 lines)
-            pass
-            ### END YOUR CODE ###
+            # YOUR CODE HERE (~20-30 lines)
+            U_r = tf.get_variable('U_r', (self._state_size, self._state_size), tf.float32,
+                                  tf.contrib.layers.xavier_initializer(seed=1021))
+            W_r = tf.get_variable('W_r', (self.input_size, self._state_size), tf.float32,
+                                  tf.contrib.layers.xavier_initializer(seed=1022))
+            b_r = tf.get_variable('b_r', [self._state_size], tf.float32,
+                                  tf.contrib.layers.xavier_initializer(seed=1023))
+            U_z = tf.get_variable('U_z', (self._state_size, self._state_size), tf.float32,
+                                  tf.contrib.layers.xavier_initializer(seed=1021))
+            W_z = tf.get_variable('W_z', (self.input_size, self._state_size), tf.float32,
+                                  tf.contrib.layers.xavier_initializer(seed=1022))
+            b_z = tf.get_variable('b_z', [self._state_size], tf.float32,
+                                  tf.contrib.layers.xavier_initializer(seed=1023))
+            U_o = tf.get_variable('U_o', (self._state_size, self._state_size), tf.float32,
+                                  tf.contrib.layers.xavier_initializer(seed=1021))
+            W_o = tf.get_variable('W_o', (self.input_size, self._state_size), tf.float32,
+                                  tf.contrib.layers.xavier_initializer(seed=1022))
+            b_o = tf.get_variable('b_o', [self._state_size], tf.float32,
+                                  tf.contrib.layers.xavier_initializer(seed=1023))
+            z = tf.sigmoid(tf.matmul(inputs, W_z) + tf.matmul(state, U_z) + b_z)
+            r = tf.sigmoid(tf.matmul(inputs, W_r) + tf.matmul(state, U_r) + b_r)
+            o = tf.tanh(tf.matmul(inputs, W_o) + r * tf.matmul(state, U_o) + b_o)
+            new_state = z * state + (1 - z) * o
+            # END YOUR CODE ###
         # For a GRU, the output and state are the same (N.B. this isn't true
         # for an LSTM, though we aren't using one of those in our
         # assignment)

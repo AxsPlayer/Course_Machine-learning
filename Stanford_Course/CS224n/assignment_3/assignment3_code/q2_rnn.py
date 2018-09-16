@@ -277,18 +277,26 @@ class RNNModel(NERModel):
                                 tf.contrib.layers.xavier_initializer(seed=1021))
             b2 = tf.get_variable('b2', [self.config.n_classes], tf.float32,
                                  tf.constant_initializer(0))
-            state = tf.zeros()
+        input_shape = tf.shape(x)[0]
+        h = tf.zeros((input_shape, self.config.hidden_size))
         # END YOUR CODE
 
         with tf.variable_scope("RNN"):
             for time_step in range(self.max_length):
                 # YOUR CODE HERE (~6-10 lines)
-
+                if time_step > 0:
+                    tf.get_variable_scope().reuse_variables()
+                o, h = cell(x[:, time_step, :], h, scope='RNN')
+                o_drop = tf.nn.dropout(o, self.config.dropout)
+                pred = tf.matmul(o_drop, U) + b2
+                preds.append(pred)
                 # END YOUR CODE
 
         # Make sure to reshape @preds here.
-        ### YOUR CODE HERE (~2-4 lines)
-        ### END YOUR CODE
+        # YOUR CODE HERE (~2-4 lines)
+        preds = tf.stack(preds, axis=0)
+        preds = tf.transpose(preds, perm=[1, 0, 2])
+        # END YOUR CODE
 
         assert preds.get_shape().as_list() == [None, self.max_length, self.config.n_classes], "predictions are not of the right shape. Expected {}, got {}".format([None, self.max_length, self.config.n_classes], preds.get_shape().as_list())
         return preds
@@ -308,8 +316,11 @@ class RNNModel(NERModel):
         Returns:
             loss: A 0-d tensor (scalar)
         """
-        ### YOUR CODE HERE (~2-4 lines)
-        ### END YOUR CODE
+        # YOUR CODE HERE (~2-4 lines)
+        loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=self.labels_placeholder, logits=preds)
+        loss = tf.boolean_mask(loss, mask=self.mask_placeholder)
+        loss = tf.reduce_mean(loss)
+        # END YOUR CODE
         return loss
 
     def add_training_op(self, loss):
@@ -331,8 +342,9 @@ class RNNModel(NERModel):
         Returns:
             train_op: The Op for training.
         """
-        ### YOUR CODE HERE (~1-2 lines)
-        ### END YOUR CODE
+        # YOUR CODE HERE (~1-2 lines)
+        train_op = tf.train.AdamOptimizer(self.config.lr).minimize(loss)
+        # END YOUR CODE
         return train_op
 
     def preprocess_sequence_data(self, examples):

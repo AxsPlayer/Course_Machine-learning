@@ -9,4 +9,13 @@
 - Advantage: compute parallel.
 
 ## History of CNN in NLP.
-- Single layer CNN: The filter is vector to sum up several word vectors to CNN layer.
+- Single layer CNN: The filter is a vector to sum up several word vectors to CNN layer.
+
+## The problems.
+- The center word will get much more attention? A: The filter will take care of that with the weights in filter.
+- What if the lengths of sentences differ? A: Add some pooling layers will deal with this problem.
+
+## Structure of CNN.
+- The advantage of CNN with pooling layer: This combination would handle variant length of sentences.
+- Multiple filters: Every filter will catch one pattern of 
+ 

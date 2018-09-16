@@ -30,6 +30,7 @@ logger = logging.getLogger("hw3.q3")
 logger.setLevel(logging.DEBUG)
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
+
 class Config:
     """Holds model hyperparams and data information.
     The config class is used to store various hyperparameters and dataset
@@ -41,6 +42,7 @@ class Config:
     n_epochs = 40
     lr = 0.2
     max_grad_norm = 5.
+
 
 class SequencePredictor(Model):
     def add_placeholders(self):
@@ -86,8 +88,10 @@ class SequencePredictor(Model):
             raise ValueError("Unsupported cell type.")
 
         x = self.inputs_placeholder
-        ### YOUR CODE HERE (~2-3 lines)
-        ### END YOUR CODE
+        # YOUR CODE HERE (~2-3 lines)
+        outputs, state = tf.nn.dynamic_rnn(cell, x, dtype=tf.float32)
+        preds = tf.sigmoid(state)
+        # END YOUR CODE
 
         return preds #state # preds
 
@@ -107,9 +111,9 @@ class SequencePredictor(Model):
         """
         y = self.labels_placeholder
 
-        ### YOUR CODE HERE (~1-2 lines)
-
-        ### END YOUR CODE
+        # YOUR CODE HERE (~1-2 lines)
+        loss = tf.reduce_mean(tf.nn.l2_loss(preds - y))
+        # END YOUR CODE
 
         return loss
 
@@ -129,9 +133,9 @@ class SequencePredictor(Model):
               tf.global_norm and save this global norm in self.grad_norm.
             - Finally, actually create the training operation by calling
               optimizer.apply_gradients.
-			- Remember to clip gradients only if self.config.clip_gradients
-			  is True.
-			- Remember to set self.grad_norm
+            - Remember to clip gradients only if self.config.clip_gradients
+                is True.
+            - Remember to set self.grad_norm
         See: https://www.tensorflow.org/api_docs/python/train/gradient_clipping
         Args:
             loss: Loss tensor.
@@ -141,13 +145,22 @@ class SequencePredictor(Model):
 
         optimizer = tf.train.GradientDescentOptimizer(learning_rate=self.config.lr)
 
-        ### YOUR CODE HERE (~6-10 lines)
-
+        # YOUR CODE HERE (~6-10 lines)
         # - Remember to clip gradients only if self.config.clip_gradients
         # is True.
         # - Remember to set self.grad_norm
+        grads_and_vars = optimizer.compute_gradients(loss)
+        variables = [output[1] for output in grads_and_vars]
+        gradients = [output[0] for output in grads_and_vars]
+        if self.config.clip_gradients:
+            tmp_gradients = tf.clip_by_global_norm(gradients, clip_norm=self.config.max_grad_norm)[0]
+            gradients = tmp_gradients
 
-        ### END YOUR CODE
+        grads_and_vars = [(gradients[i], variables[i]) for i in range(len(gradients))]
+        self.grad_norm = tf.global_norm(gradients)
+
+        train_op = optimizer.apply_gradients(grads_and_vars)
+        # END YOUR CODE
 
         assert self.grad_norm is not None, "grad_norm was not set properly!"
         return train_op

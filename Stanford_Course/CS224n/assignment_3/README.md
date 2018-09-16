@@ -19,3 +19,7 @@
 (b) (i) Because the target of Neural Network is to predict token’s label correctly, it will decrease the F1 score for named entity.
     (ii) The first reason is that the F1 is not differentiate. The second reason is that the F1 is global measure, thus it’s difficulty to batch and parallelize.
 
+(g) The one limitation is that RNN cannot see the future, thus use biRNN to deal with this problem. The another limitation is that the result doesn’t consider adjacent tokens have the same tag, thus use CRF loss(pair-wise agreement) to solve this problem.
+
+3. Grooving with GRUs.
+(g) The gradient clipping is not useful for RNN for gradient vanishing problem. And the gradient clipping is also not helpful for GRU for it can’t improve loss.
