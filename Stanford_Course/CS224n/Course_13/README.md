@@ -46,4 +46,10 @@ Double the neural network size, but not back-propagation for original part word 
 ## Tree-LSTMs is a good choice.
 
 ## CNN application: Translation.
-= Uses CNN for encoding and RNN for decoding, for Neural machine translation.
+- Uses CNN for encoding and RNN for decoding, for Neural machine translation.
+
+## Model comparison.
+- Bag of Vectors: Good baseline for simple classification problems.
+- Window Model: Good for single word classification for problems that do not need wide context.
+- CNNs: Good for classification, unclear how to incorporate phrase level annotation, need zero padding, hard to interpret, easy to parallelize on GPUs.
+- Recurrent Neural Networks: Cognitively plausible(reading from left to right),  not best for classification, slower than CNNs, can do sequence tagging and classification, very active research.
