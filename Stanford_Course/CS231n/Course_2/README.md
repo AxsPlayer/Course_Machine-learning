@@ -10,4 +10,4 @@
 	- Intraclass.
 
 ## Classifier.
-- First classifier: Nearest Neighbor.
+- First classifier: Nearest Neighbor. It's the easiest method to try at first and you can try different kind of distance. Different distance means different boundary.
