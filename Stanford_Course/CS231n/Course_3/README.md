@@ -20,4 +20,10 @@
 
 ## Optimization.
 - Random search.
-- 
+- SGD.
+- Mini-batch gradient.
+
+## Image Feature Representation.
+- Color histgram.
+- Histogram of Oriented Gradients.(HoG)
+- Bag of Words.
