@@ -21,3 +21,21 @@
 	- but also an annoyance
 
 	- The ReLU unit will be dead if the weight initialization is not good at first time or the learning rate is set too high that after overupdating the weight.
+- Leaky ReLU:
+	- Does not saturate
+	- Computationally efficient
+	- Converges much faster than sigmoid/tanh
+	- will not die
+- PReLU: add the parameter to the Leaky ReLU.
+- ELU: Exponential Linear Units
+	- All benefits of ReLU
+	- Colser to zero mean outputs
+	- Negative saturation regime compared with Leaky ReLU
+	- Adds some robustness to noise
+	- Computation needs exp()
+- Maxout Neuron: generalize ReLU and Leaky ReLU, but double the parameters.
+- In practice:
+	- Use ReLU. Be careful with your learning rates.
+	- Try out Leaky ReLU/ Maxout/ELU
+	- Try out tanh but don't expect much
+	- don't use sigmoid
