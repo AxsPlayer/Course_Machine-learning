@@ -30,5 +30,5 @@
 
 ## Regularization.
 - Add term to loss. (L1 + L2) But L2 loss may not make a lot sense in nueral network.
-- Dropout: 0.5 is common. One interpretation is that the network cast the importance to all the features to prevent overfitting. Another interpretation is that the dropout is ensemble of models.
+- Dropout: 0.5 is common. One interpretation is that the network cast the importance to all the features to prevent overfitting. Another interpretation is that the dropout is ensemble of models. At test time, multiply by drop prob.
 
