@@ -30,5 +30,19 @@
 
 ## Regularization.
 - Add term to loss. (L1 + L2) But L2 loss may not make a lot sense in nueral network.
-- Dropout: 0.5 is common. One interpretation is that the network cast the importance to all the features to prevent overfitting. Another interpretation is that the dropout is ensemble of models. At test time, multiply by drop prob.
+- Dropout: 0.5 is common. One interpretation is that the network cast the importance to all the features to prevent overfitting. Another interpretation is that the dropout is ensemble of models. At test time, multiply by drop pro b.
+- Inverted dropout: In train time, divide by p, but test time, the neural network will be more efficient. It takes more time to train.
 
+## Batch Normalization.
+- Also have regularization effect, for they both add some kind of randomness in traiing time, and average out randomness as testing time. But the problem is it cannot control strength.
+
+## Data Augmentation. (A kind of regularization.)
+- Random change the pics and create more data.
+- Translation, rotation...
+- More: dropconnect, Fractional max pooling, stochastic depth(eliminate some layers randomly in deep network)
+- Using: use batch normalization, then add one by one according to need.
+
+## Transfer Learning.
+- If you have small dataset, freeze previous layer, and retrain the FC.
+- If you have large dataset, fine-tune more layers.
+- If you have different kind of problem, you should start train and add FC at early layer.
