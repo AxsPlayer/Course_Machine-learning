@@ -1,3 +1,3 @@
-# Note of Course 9.(Deep Learning Software)
+# Note of Course 9.(CNN Architectures)
 
 ## 
