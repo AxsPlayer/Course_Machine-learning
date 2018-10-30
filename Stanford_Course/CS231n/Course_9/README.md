@@ -11,4 +11,8 @@
 	- No FC layers.
 	- Only 5 million parameters.
 	- But the problem is that the inception will increase the depth of the network output, then use the 1 by 1 conv to help manage our computational complexity to reduce the depth of the network.
-- 
+	- multiple place for softmax output. To prevent gradient vanish in deep neural network.
+- ResNet: 152 layers.
+	- Very deep networks using residual connections.
+	- The problem is the optimization problem, and the solution is that we can use transformation function and the x to sum up the result.
+- Other networks: NiN. 
