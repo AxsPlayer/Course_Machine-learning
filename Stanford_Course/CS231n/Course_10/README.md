@@ -14,3 +14,5 @@
 - To deal with the problem with too long sequence:
 	- truncated backpropagation through time: means to train the backpro part by part, every part contains hundred length.
 - image caption.
+	- Tune all part of model jointly, with CNN and RNN.
+	- image captioning with attention. Soft and hard.
