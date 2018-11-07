@@ -28,5 +28,5 @@
 ## variational autoencoder.
 - cannot optimize directly, define low bound.
 - CNN autoencoder: use features to initialize a supervised model. When we have small data.
-- 
+- probabilistic spin on autoencoders - will let us sample from the model to generate data.
 
