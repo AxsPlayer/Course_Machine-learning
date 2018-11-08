@@ -29,4 +29,18 @@
 - cannot optimize directly, define low bound.
 - CNN autoencoder: use features to initialize a supervised model. When we have small data.
 - probabilistic spin on autoencoders - will let us sample from the model to generate data.
+- encoder latent features, and sample from probabilistic generation of data.(data likelihood)
+- Generate data: use decoder network, sample z from prior.
+- Probabilistic spin to traditional autoencoders -> allows generating data.
+Define intractable density function with latent z.
+- pros: principled approach to generative models. And allows inference of q, can be useful feature representation.
+- cons: not accurate as pixelCNN.
+
+## GANs.
+- don't work with any explicit density function, but use game theory.
+- Problem: want to sample from complex, high-dimensional trainingng distribution. No direct way to this. Solution: sample from a simple distribution, e.g. random noise. Learn transformation to training distribution.
+- training GANs: two-player game.
+	- generator network: try to fool the discriminator by generating real-looking images.
+	- Discriminator network: try to distinguish between real and fake images.
+- Train jointly in minimax game.
 
