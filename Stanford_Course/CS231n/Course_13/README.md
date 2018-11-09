@@ -42,5 +42,10 @@ Define intractable density function with latent z.
 - training GANs: two-player game.
 	- generator network: try to fool the discriminator by generating real-looking images.
 	- Discriminator network: try to distinguish between real and fake images.
-- Train jointly in minimax game.
+- Train jointly in minimax game. Alternate between: Gradient ascent on discriminator and gradient descent on generator. In practice, optimizing this generator objective does not work well.  To solve this problem, instead of minimizing likelihood of discriminatory being correct, now maximize likelihood of discriminator being wrong. Same objective of fooling discriminator, but now higher gradient signal for bad samples => works much better! Standard in practice. (For the loss gradient is flat in the beginning at first. Thus convert the direction.) Thus, in the bad sample distribution, the model learns faster.
+- Interpretable vectors math.
+- Pros: state of art
+- Cons: trickier / more unstable to train, and; t solve inference queries such as px and.
+- Conditional GANs, GANs for all kinds of application.
+
 
