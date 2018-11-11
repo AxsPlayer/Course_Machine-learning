@@ -26,5 +26,10 @@
 
 ## Reinforce algorithm.
 - does not depend on transition probability.
+- Variance reduction
+	- push up probabilities of an action seen, only by the cumulative future reward from that state.
+
+## Recurrent attention model(RAM)
+- use attention.
 
 
