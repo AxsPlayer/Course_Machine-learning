@@ -16,9 +16,29 @@
 - Weight Sharing
 	- class the weights and represent centroid.
 	- huffman coding.
-- SqueezeNet: compress the convolutional layer.
+	- SqueezeNet: compress the convolutional layer.
 - Quantization
+	- convert float into 8-bit integer.
 - Low Rank Approximation
+	- SVD, conv layer into two layers.
 - Binary / Ternary Net
+	- multiple weights into three weights
 - Winograd Transformation
+
+## Hardware for Efficient Inference.
+- Google TPU.
+
+## Algorithms for efficient training.
+- Parallelization
+	- data-parallel
+	- model-parallel
+- mixed precision with FP16 and FP32
+	- input is FP16
+- Model Distillation.
+	-  student model
+- Dense Sparse Dense Training.
+	- prune the network and train again.
+	- regularization.
+
+## 
 
