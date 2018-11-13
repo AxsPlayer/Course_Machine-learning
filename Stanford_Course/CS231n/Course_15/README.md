@@ -40,5 +40,6 @@
 	- prune the network and train again.
 	- regularization.
 
-## 
+## Hardware for Efficient Training.
+- GPUs for Training.
 
