@@ -16,4 +16,15 @@
 
 ## The Fast Gradient Sign Method.
 - maxnorm constraint.
+- All the grid classification boundary is nearly linear.
+- also can make Reinforcement learning fail.
+
+## Solution.
+- RBFs behave more intuitively.
+- Other attach technology: cross-technology transferability attack
+	- using other models to create adversarial examples
+- Enhancing Transfer with Ensembles
+	- if attack ensemble models, then any model outside is attacked.
+- Train on adversarial examples will prevent overfitting and do better on the original task.
+
 
