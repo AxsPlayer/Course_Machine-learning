@@ -47,7 +47,7 @@ class TwoLayerNet(object):
         # and biases using the keys 'W1' and 'b1' and second layer                 #
         # weights and biases using the keys 'W2' and 'b2'.                         #
         ############################################################################
-        pass
+        self.params['W1'] = np.linspace(-0.7, 0.3, num=D*H).reshape(D, H)
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
