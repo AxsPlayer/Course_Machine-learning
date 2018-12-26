@@ -181,7 +181,7 @@ def batchnorm_forward(x, gamma, beta, bn_param):
         # Referencing the original paper (https://arxiv.org/abs/1502.03167)   #
         # might prove to be helpful.                                          #
         #######################################################################
-        pass
+        
         #######################################################################
         #                           END OF YOUR CODE                          #
         #######################################################################
