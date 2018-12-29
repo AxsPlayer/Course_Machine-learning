@@ -180,6 +180,9 @@ class FullyConnectedNet(object):
         for i, hd in enumerate(hidden_dims):
             self.params['W%d'%(i+1)] = weight_scale * np.random.randn(layer_input_dim, hd)
             self.params['b%d'%(i+1)] = weight_scale * np.zeros(hd)
+            if self.normalization:
+                self.params['gamma%d'%(i+1)] = np.ones(hd)
+                self.params['beta%d'%(i+1)] = np.zeros(hd)
             layer_input_dim = hd
         self.params['W%d'%(self.num_layers)] = weight_scale * np.random.randn(layer_input_dim, num_classes)
         self.params['b%d'%(self.num_layers)] = weight_scale * np.zeros(num_classes)
