@@ -335,14 +335,20 @@ def layernorm_forward(x, gamma, beta, ln_param):
     # transformations you could perform, that would enable you to copy over   #
     # the batch norm code and leave it almost unchanged?                      #
     ###########################################################################
-    sample_mean = np.mean(x, axis = 1)
-    sample_var = np.var(x , axis = 1)
-    x = np.array(x)
-    print(x.shape)
-    print(sample_mean.shape)
-    x_hat = (x - sample_mean) / (np.sqrt(sample_var  + eps))
-    out = gamma * x_hat + beta
-    cache = (gamma, x, sample_mean, sample_var, eps, x_hat)
+    x = x.T  #(N,D) -> (D,N)
+    
+    sample_mean = np.mean(x,axis=0) #(N,)
+    sample_var = np.var(x,axis=0) #(N,)
+
+    sqrt_var = np.sqrt(sample_var+eps) #(N,)
+    inv_sqrt_var = 1/sqrt_var #(N,)
+    xhat = (x-sample_mean) * inv_sqrt_var #(D,N)
+
+    xhat = xhat.T #(D,N) -> (N,D)
+    
+    out = gamma * xhat + beta
+
+    cache = (x,sample_mean,sample_var,sqrt_var,inv_sqrt_var,xhat,out,gamma,beta)
     ###########################################################################
     #                             END OF YOUR CODE                            #
     ###########################################################################
@@ -373,25 +379,22 @@ def layernorm_backward(dout, cache):
     # implementation of batch normalization. The hints to the forward pass    #
     # still apply!                                                            #
     ###########################################################################
-    gamma, x, u_b, sigma_squared_b, eps, x_hat = cache
-    N = x.shape[0]
-
-    dx_1 = gamma * dout
-    dx_2_b = np.sum((x - u_b) * dx_1, axis=0)
-    dx_2_a = ((sigma_squared_b + eps) ** -0.5) * dx_1
-    dx_3_b = (-0.5) * ((sigma_squared_b + eps) ** -1.5) * dx_2_b
-    dx_4_b = dx_3_b * 1
-    dx_5_b = np.ones_like(x) / N * dx_4_b
-    dx_6_b = 2 * (x - u_b) * dx_5_b
-    dx_7_a = dx_6_b * 1 + dx_2_a * 1
-    dx_7_b = dx_6_b * 1 + dx_2_a * 1
-    dx_8_b = -1 * np.sum(dx_7_b, axis=0)
-    dx_9_b = np.ones_like(x) / N * dx_8_b
-    dx_10 = dx_9_b + dx_7_a
-
-    dgamma = np.sum(x_hat * dout, axis=0)
-    dbeta = np.sum(dout, axis=0)
-    dx = dx_10
+    N = dout.shape[0]
+    D = dout.shape[1]
+    
+    x,sample_mean,sample_var,sqrt_var,inv_sqrt_var,xhat,out,gamma,beta = cache
+    
+    dbeta = np.sum(dout,axis=0)
+    dgamma = np.sum(dout*xhat , axis=0)    
+    dxhat = dout*gamma
+    
+    xhat = xhat.T
+    dxhat = dxhat.T
+    N,D = xhat.shape
+    
+    dx = (1/N) * inv_sqrt_var * (N*dxhat - np.sum(dxhat,axis=0) - xhat*np.sum(dxhat*xhat,axis=0))
+    
+    dx = dx.T
     ###########################################################################
     #                             END OF YOUR CODE                            #
     ###########################################################################

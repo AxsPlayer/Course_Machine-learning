@@ -164,6 +164,7 @@ class FullyConnectedNet(object):
         self.dtype = dtype
         self.params = {}
 
+        total_dims = [input_dim]+hidden_dims+[num_classes]
         ############################################################################
         # TODO: Initialize the parameters of the network, storing all values in    #
         # the self.params dictionary. Store weights and biases for the first layer #
@@ -176,16 +177,15 @@ class FullyConnectedNet(object):
         # beta2, etc. Scale parameters should be initialized to ones and shift     #
         # parameters should be initialized to zeros.                               #
         ############################################################################
-        layer_input_dim = input_dim
-        for i, hd in enumerate(hidden_dims):
-            self.params['W%d'%(i+1)] = weight_scale * np.random.randn(layer_input_dim, hd)
-            self.params['b%d'%(i+1)] = weight_scale * np.zeros(hd)
-            if self.normalization:
-                self.params['gamma%d'%(i+1)] = np.ones(hd)
-                self.params['beta%d'%(i+1)] = np.zeros(hd)
-            layer_input_dim = hd
-        self.params['W%d'%(self.num_layers)] = weight_scale * np.random.randn(layer_input_dim, num_classes)
-        self.params['b%d'%(self.num_layers)] = weight_scale * np.zeros(num_classes)
+        for i in range(self.num_layers):            
+             self.params['W%d' %(i+1)] = np.random.normal(loc=0.0,scale=weight_scale,
+                                                          size = (total_dims[i],total_dims[i+1]))
+                
+             self.params['b%d' %(i+1)] = np.zeros((total_dims[i+1]))  
+             if (self.normalization in ['batchnorm','layernorm']) and (i!=self.num_layers-1):
+                 self.params['gamma%d' %(i+1)] = np.ones((total_dims[i+1]))
+                 self.params['beta%d' %(i+1)] = np.zeros((total_dims[i+1]))
+        
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
@@ -244,23 +244,34 @@ class FullyConnectedNet(object):
         # self.bn_params[1] to the forward pass for the second batch normalization #
         # layer, etc.                                                              #
         ############################################################################
-        layer_input = X
-        ar_cache = {}
-        dp_cache = {}
-
-        for lay in range(self.num_layers-1):
-            if self.normalization == 'batchnorm':
-                layer_input, ar_cache[lay] = affine_bn_relu_forward(layer_input, 
-                                            self.params['W%d'%(lay+1)], self.params['b%d'%(lay+1)], 
-                                            self.params['gamma%d'%(lay+1)], self.params['beta%d'%(lay+1)], self.bn_params[lay])
+        caches = {}
+        
+        scores = X
+        for i in range(1,self.num_layers+1):
+               
+            if i!=self.num_layers:
+               scores,caches['fc%d' %(i)] = affine_forward(scores,
+                                                   self.params['W%d' %(i)],
+                                                   self.params['b%d' %(i)])
+               
+               if self.normalization == 'batchnorm':
+                  scores, caches['bn%d' %(i)] = batchnorm_forward(scores, 
+                                                                  self.params['gamma%d' %(i)], 
+                                                                  self.params['beta%d' %(i)],
+                                                                  self.bn_params[i-1])    
+               if self.normalization == 'layernorm':
+                  scores, caches['ln%d' %(i)] = layernorm_forward(scores, 
+                                                                  self.params['gamma%d' %(i)], 
+                                                                  self.params['beta%d' %(i)],
+                                                                  self.bn_params[i-1])      
+               scores, caches['relu%d' %(i)] = relu_forward(scores)
+            
+               if self.use_dropout:
+                  scores, caches['dropout%d' %(i)] = dropout_forward(scores, self.dropout_param)
             else:
-                layer_input, ar_cache[lay] = affine_relu_forward(layer_input, self.params['W%d'%(lay+1)], self.params['b%d'%(lay+1)])
-
-            if self.use_dropout:
-                layer_input,  dp_cache[lay] = dropout_forward(layer_input, self.dropout_param)
-
-        ar_out, ar_cache[self.num_layers] = affine_forward(layer_input, self.params['W%d'%(self.num_layers)], self.params['b%d'%(self.num_layers)])
-        scores = ar_out
+               scores,caches['fc%d' %(i)] = affine_forward(scores,
+                                                   self.params['W%d' %(i)],
+                                                   self.params['b%d' %(i)])
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
@@ -283,28 +294,33 @@ class FullyConnectedNet(object):
         # automated tests, make sure that your L2 regularization includes a factor #
         # of 0.5 to simplify the expression for the gradient.                      #
         ############################################################################
-        loss, dscores = softmax_loss(scores, y)
-        dhout = dscores
-        loss = loss + 0.5 * self.reg * np.sum(self.params['W%d'%(self.num_layers)] * self.params['W%d'%(self.num_layers)])
-        dx , dw , db = affine_backward(dhout , ar_cache[self.num_layers])
-        grads['W%d'%(self.num_layers)] = dw + self.reg * self.params['W%d'%(self.num_layers)]
-        grads['b%d'%(self.num_layers)] = db
-        dhout = dx
-        for idx in range(self.num_layers-1):
-            lay = self.num_layers - 1 - idx - 1
-            loss = loss + 0.5 * self.reg * np.sum(self.params['W%d'%(lay+1)] * self.params['W%d'%(lay+1)])
-            if self.use_dropout:
-                dhout = dropout_backward(dhout ,dp_cache[lay])
-            if self.normalization=='batchnorm':
-                dx, dw, db, dgamma, dbeta = affine_bn_relu_backward(dhout, ar_cache[lay])
+        loss, dscores = softmax_loss(scores,y)
+        
+        #Adding Regularization term
+        for i in range(1,self.num_layers+1):
+            loss += 0.5 * self.reg * np.sum(self.params['W%d' %(i)] * self.params['W%d' %(i)])
+            
+        #backprop to the future
+        for i in reversed(range(1,self.num_layers+1)):
+            
+            if i==self.num_layers:
+               dscores , grads['W%d' %(i)] , grads['b%d' %(i)] = affine_backward(dscores, caches['fc%d' %(i)])               
+            
             else:
-                dx, dw, db = affine_relu_backward(dhout, ar_cache[lay])
-            grads['W%d'%(lay+1)] = dw + self.reg * self.params['W%d'%(lay+1)]
-            grads['b%d'%(lay+1)] = db
-            if self.normalization=='batchnorm':
-                grads['gamma%d'%(lay+1)] = dgamma
-                grads['beta%d'%(lay+1)] = dbeta
-            dhout = dx
+               if self.use_dropout:
+                    dscores = dropout_backward(dscores, caches['dropout%d' %(i)])
+                    
+               dz = relu_backward(dscores,caches['relu%d' %(i)]) 
+            
+               if self.normalization == 'batchnorm': 
+                   dz, grads['gamma%d' %(i)], grads['beta%d' %(i)] =  batchnorm_backward(dz, caches['bn%d' %(i)])  
+                
+               if self.normalization == 'layernorm': 
+                   dz, grads['gamma%d' %(i)], grads['beta%d' %(i)] =  layernorm_backward(dz, caches['ln%d' %(i)]) 
+                
+               dscores, grads['W%d' %(i)], grads['b%d' %(i)] = affine_backward(dz, caches['fc%d' %(i)])
+            
+            grads['W%d' %(i)] += self.reg * self.params['W%d' %(i)]
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
