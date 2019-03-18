@@ -108,3 +108,9 @@ Stanford_Course/CS224n/assignment_2/assignment2_code/data/weights/checkpoint
 Stanford_Course/CS224n/assignment_2/assignment2_code/data/weights/parser.weights.data-00000-of-00001
 Stanford_Course/CS224n/assignment_2/assignment2_code/data/weights/parser.weights.index
 Stanford_Course/CS224n/assignment_2/assignment2_code/data/weights/parser.weights.meta
+*.h5
+*.json
+*.data-00000-of-00001
+*.index
+*.meta
+*.npz
